@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: be/Dockerfile
+    image: anlyst-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - API_TOKEN=test
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./fe
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: "http://host.docker.internal:5000"
+    image: anlyst-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge
